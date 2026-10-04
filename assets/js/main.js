@@ -397,7 +397,7 @@ function renderShipTable() {
   const c = cart.currency, m = eur => money(Money.convert(eur, c));
   $('#shipTable tbody').innerHTML = CONFIG.shipping.zones.map(z => `
     <tr><td>${z.name}</td><td>${m(z.rates[100].single)}</td><td>${m(z.rates[100].dozen)}</td><td>${m(z.rates[75].single)}</td><td>${m(z.rates[75].dozen)}</td><td>${z.days}</td></tr>`).join('');
-  $('#shipNote').textContent = `Each dozen box travels as its own parcel; up to six singles share one. The Nº 75 box is under a metre long, so it costs less to send. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
+  $('#shipNote').textContent = `Prices are per parcel: each dozen box is one parcel, and up to six singles share one. In France, pick up from a Mondial Relay point or have it brought to your door. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
 }
 
 /* ============================================================

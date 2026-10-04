@@ -45,19 +45,23 @@ const CONFIG = {
     ],
   },
 
-  /* Shipping, in EUR (other currencies converted at `fx`), charged on top of
-     the candles at roughly what the carrier charges us.
-     One parcel per dozen box; up to six singles of one height share a parcel.
-     The most expensive parcel pays its full rate; each further parcel pays
-     its height's `extra`. The Nº 75 box is under a metre, so no oversize fees. */
+  /* Shipping, in EUR incl. VAT (other currencies converted at `fx`), charged
+     on top of the candles at roughly what the carrier charges us (Boxtal pro
+     rates, Oct 2026). One parcel per dozen box; up to six singles of one height
+     share a parcel; every parcel pays its own rate. The Nº 100 box (107 cm)
+     goes by carriers with no length surcharge below 120 cm (Mondial Relay,
+     FedEx); the Nº 75 box (82 cm) is under every carrier's 100 cm line. */
   shipping: {
     singlesPerParcel: 6,
+    defaultZone: 'FR-R',
     zones: [
-      { id: 'FR', name: 'France', days: '2–3 days', rates: { 100: { single: 15.9, dozen: 23.9, extra: 15 }, 75: { single: 9.9, dozen: 16.9, extra: 9 } } },
-      { id: 'EU', name: 'European Union', days: '3–5 days', rates: { 100: { single: 24.9, dozen: 34.9, extra: 25 }, 75: { single: 19.9, dozen: 29.9, extra: 18 } } },
-      { id: 'UK', name: 'United Kingdom', days: '3–6 days', rates: { 100: { single: 29.9, dozen: 44.9, extra: 30 }, 75: { single: 24.9, dozen: 34.9, extra: 24 } } },
-      { id: 'NA', name: 'United States, Canada', days: '5–8 days', rates: { 100: { single: 69, dozen: 149, extra: 110 }, 75: { single: 49, dozen: 99, extra: 80 } } },
-      { id: 'ROW', name: 'Rest of world', days: '5–10 days', rates: { 100: { single: 79, dozen: 159, extra: 119 }, 75: { single: 59, dozen: 119, extra: 90 } } },
+      { id: 'FR-R', name: 'France, pickup point', days: '3–5 days', rates: { 100: { single: 5.9, dozen: 12.9 }, 75: { single: 4.9, dozen: 10.9 } } },
+      { id: 'FR-H', name: 'France, to your door', days: '2–4 days', rates: { 100: { single: 8.9, dozen: 13.9 }, 75: { single: 7.9, dozen: 12.9 } } },
+      { id: 'BDN', name: 'Belgium, Germany, Netherlands', days: '3–5 days', rates: { 100: { single: 11.9, dozen: 14.9 }, 75: { single: 10.9, dozen: 13.9 } } },
+      { id: 'EU', name: 'Rest of the EU', days: '4–7 days', rates: { 100: { single: 17.9, dozen: 19.9 }, 75: { single: 15.9, dozen: 18.9 } } },
+      { id: 'UK', name: 'United Kingdom', days: '4–6 days', rates: { 100: { single: 18.9, dozen: 22.9 }, 75: { single: 16.9, dozen: 19.9 } } },
+      { id: 'NA', name: 'United States, Canada', days: '5–8 days', rates: { 100: { single: 69, dozen: 149 }, 75: { single: 49, dozen: 99 } } },
+      { id: 'ROW', name: 'Rest of world', days: '5–10 days', rates: { 100: { single: 79, dozen: 159 }, 75: { single: 59, dozen: 119 } } },
     ],
   },
 
@@ -99,17 +103,14 @@ const Store = {
 
 /* ---------- shipping ---------- */
 function shippingQuote(items, zoneId, currency) {
-  const z = CONFIG.shipping.zones.find(x => x.id === zoneId);
-  const parcels = [];
+  const z = CONFIG.shipping.zones.find(x => x.id === zoneId) || CONFIG.shipping.zones[0];
+  let eur = 0;
   CONFIG.product.heights.forEach(h => {
     const singles = items[`${h.id}-single`] || 0;
     const dozens = items[`${h.id}-dozen`] || 0;
-    for (let i = 0; i < dozens; i++) parcels.push({ h: h.id, full: z.rates[h.id].dozen });
-    for (let i = 0; i < Math.ceil(singles / CONFIG.shipping.singlesPerParcel); i++) parcels.push({ h: h.id, full: z.rates[h.id].single });
+    eur += dozens * z.rates[h.id].dozen;
+    eur += Math.ceil(singles / CONFIG.shipping.singlesPerParcel) * z.rates[h.id].single;
   });
-  if (!parcels.length) return 0;
-  parcels.sort((a, b) => b.full - a.full);
-  const eur = parcels.reduce((sum, p, i) => sum + (i === 0 ? p.full : z.rates[p.h].extra), 0);
   return Money.convert(Math.round(eur * 100) / 100, currency);
 }
 
@@ -126,7 +127,8 @@ class Cart {
       if (this.variant(to)) this.items[to] = (this.items[to] || 0) + qty * mult;
     });
     this.currency = Store.get('tt.currency', CONFIG.defaultCurrency);
-    this.zone = Store.get('tt.zone', 'FR');
+    const zone = Store.get('tt.zone', CONFIG.shipping.defaultZone);
+    this.zone = CONFIG.shipping.zones.some(z => z.id === zone) ? zone : CONFIG.shipping.defaultZone;
     this.listeners = [];
   }
   onChange(fn) { this.listeners.push(fn); }
