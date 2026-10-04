@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tall Taper — One-metre taper candles</title>
+<meta name="description" content="Taper candles one metre tall, in silk ivory. Sold singly or by the dozen, packed in boxes made to measure, shipped worldwide.">
+<meta name="theme-color" content="#F4EEE4">
+<meta property="og:title" content="Tall Taper — One metre of light">
+<meta property="og:description" content="Taper candles one metre tall, in silk ivory. Sold singly or by the dozen, shipped worldwide.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://dimlimber.github.io/talltapercandles/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=Instrument+Sans:wdth,wght@75..100,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "The One-Metre Taper — Nº 100, Silk Ivory",
+  "description": "Unscented taper candle, 100 cm tall with a 2.2 cm base that fits standard holders.",
+  "brand": { "@type": "Brand", "name": "Tall Taper" },
+  "sku": "TT-100-SIV",
+  "offers": [
+    { "@type": "Offer", "name": "Single", "priceCurrency": "EUR", "price": "19.00", "availability": "https://schema.org/PreOrder" },
+    { "@type": "Offer", "name": "Dozen", "priceCurrency": "EUR", "price": "180.00", "availability": "https://schema.org/PreOrder" }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- shared SVG paint servers (kept rendered, never display:none, so every drawing can reference them) -->
+<svg class="defs" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <linearGradient id="wax" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D9C7A8"/>
+      <stop offset=".2" stop-color="#EFE3CE"/>
+      <stop offset=".42" stop-color="#FFFAF1"/>
+      <stop offset=".62" stop-color="#F1E6D2"/>
+      <stop offset="1" stop-color="#CBB796"/>
+    </linearGradient>
+    <linearGradient id="waxV" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D9C7A8"/>
+      <stop offset=".22" stop-color="#EFE3CE"/>
+      <stop offset=".44" stop-color="#FFFAF1"/>
+      <stop offset=".64" stop-color="#F1E6D2"/>
+      <stop offset="1" stop-color="#CBB796"/>
+    </linearGradient>
+    <linearGradient id="plaster" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E4DCCF"/>
+      <stop offset=".45" stop-color="#FBF8F2"/>
+      <stop offset="1" stop-color="#DCD2C2"/>
+    </linearGradient>
+    <radialGradient id="flameOuter" cx=".5" cy=".78" r=".75">
+      <stop offset="0" stop-color="#FFF9EA"/>
+      <stop offset=".32" stop-color="#FFE7AE"/>
+      <stop offset=".66" stop-color="#FFB257"/>
+      <stop offset="1" stop-color="#F07A2A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="flameCore" cx=".5" cy=".7" r=".6">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".6" stop-color="#FFF4D6"/>
+      <stop offset="1" stop-color="#FFE3A0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#FFC774" stop-opacity=".55"/>
+      <stop offset=".22" stop-color="#FFC774" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#FFC774" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#FFC774" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<div class="preview-strip" role="note">
+  <span>Preview site — not yet taking orders.</span>
+  <span class="preview-strip__ask">Thoughts welcome.</span>
+</div>
+
+<header class="header" id="top">
+  <div class="wrap header__inner">
+    <a class="logo" href="#top" aria-label="Tall Taper, home">
+      <span class="logo__word">Tall</span>
+      <svg class="logo__candle" viewBox="0 0 10 60" aria-hidden="true">
+        <path class="logo__flame" d="M5 1.5 C 2.6 6, 2.4 9.2, 5 11 C 7.6 9.2, 7.4 6, 5 1.5 Z"/>
+        <rect x="4.25" y="13" width="1.5" height="47" rx=".4"/>
+      </svg>
+      <span class="logo__word">Taper</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#why">Why a metre</a>
+      <a href="#shop">Shop</a>
+      <a href="#planner">Planner</a>
+      <a href="#shipping">Shipping</a>
+      <a href="#trade">Trade</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="header__tools">
+      <label class="currency">
+        <span class="visually-hidden">Currency</span>
+        <select id="currency"></select>
+      </label>
+      <button class="bag-btn" id="bagBtn" aria-haspopup="dialog" aria-controls="bag">
+        Bag <span class="bag-btn__count" id="bagCount" aria-live="polite">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow reveal">Nº 100 &nbsp;·&nbsp; Silk Ivory &nbsp;·&nbsp; Unscented</p>
+        <div class="hero__bottom">
+          <h1 id="heroTitle" class="hero__title">
+            <span class="line"><span>One metre</span></span>
+            <span class="line"><span>of <em>light.</em></span></span>
+          </h1>
+          <p class="lede reveal">Taper candles one metre tall, made for long tables and long evenings. Sold singly or by the dozen, packed in boxes cut to fit, shipped worldwide.</p>
+          <div class="hero__cta reveal">
+            <a class="btn btn--solid" href="#shop">Shop the candle</a>
+            <a class="link-arrow" href="#planner">How many do I need?</a>
+          </div>
+          <dl class="spec-row reveal">
+            <div><dt>Height</dt><dd>100 cm</dd></div>
+            <div><dt>Base</dt><dd>2.2 cm</dd></div>
+            <div><dt>Burn</dt><dd>≈ 30 h</dd></div>
+            <div><dt>From</dt><dd data-price-from>€15</dd></div>
+          </dl>
+        </div>
+      </div>
+      <figure class="hero__figure" aria-label="Scale drawing: the one-metre taper beside a standard 25 cm dinner candle">
+        <svg id="heroDrawing" class="drawing" preserveAspectRatio="xMidYMax meet"></svg>
+      </figure>
+    </div>
+  </section>
+
+  <!-- WHY A METRE -->
+  <section class="why section" id="why" aria-labelledby="whyTitle">
+    <div class="wrap why__grid">
+      <div class="why__copy">
+        <p class="eyebrow">01 — Why a metre</p>
+        <h2 id="whyTitle">Light above.<br>Conversation below.</h2>
+        <p>A dinner taper puts its flame exactly where your guests' eyes are. Raise it a metre and the light lifts clear of the eye line: faces glow, nobody squints, and you can talk straight through a forest of slender stems.</p>
+        <p>The base is the standard 2.2 cm, so the candle sits in the holders you already own.</p>
+        <dl class="figures">
+          <div><dt>1,000 mm</dt><dd>of candle, base to wick</dd></div>
+          <div><dt>≈ 1.85 m</dt><dd>flame height on a standard table</dd></div>
+          <div><dt>≈ 30 h</dt><dd>of light from each candle</dd></div>
+        </dl>
+      </div>
+      <figure class="why__figure">
+        <svg id="elevation" class="drawing" viewBox="-180 0 1760 2140" role="img" aria-labelledby="elevTitle">
+          <title id="elevTitle">Side elevation of a dinner table. A standard taper puts its flame at seated eye level; the one-metre taper puts it about 1.85 m above the floor.</title>
+        </svg>
+        <figcaption>Side elevation, drawn to scale. Seated eye line from 1.10 to 1.25 m.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- TABLE BAND -->
+  <section class="band" aria-label="Illustration of a long dinner table lit by one-metre candles">
+    <svg id="band" class="band__svg" preserveAspectRatio="xMidYMax slice" role="img" aria-hidden="true"></svg>
+    <div class="wrap band__caption">
+      <p>A table for twelve. Ten candles, holders at three heights.</p>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section class="shop section" id="shop" aria-labelledby="shopTitle">
+    <div class="wrap shop__grid">
+      <div class="shop__visual">
+        <p class="eyebrow">02 — The candle</p>
+        <figure class="box-figure">
+          <svg id="boxDrawing" class="drawing" viewBox="0 90 1200 320" role="img" aria-labelledby="boxTitle">
+            <title id="boxTitle">Top view of the box, lid off</title>
+          </svg>
+          <figcaption id="boxCaption"></figcaption>
+        </figure>
+        <dl class="specs" id="specs"></dl>
+      </div>
+
+      <div class="buy" id="buy">
+        <p class="eyebrow">Nº 100</p>
+        <h2 id="shopTitle" class="buy__title">The One-Metre Taper</h2>
+        <p class="buy__sub">Silk ivory · unscented · 100 cm</p>
+
+        <fieldset class="variants">
+          <legend class="visually-hidden">Choose a format</legend>
+          <div id="variantList"></div>
+        </fieldset>
+
+        <div class="qty-row">
+          <span class="qty-row__label" id="qtyLabel">Quantity</span>
+          <div class="stepper" role="group" aria-labelledby="qtyLabel">
+            <button type="button" data-step="-1" aria-label="One fewer">−</button>
+            <output id="qty" aria-live="polite">1</output>
+            <button type="button" data-step="1" aria-label="One more">+</button>
+          </div>
+        </div>
+
+        <p class="buy__summary" id="buySummary"></p>
+        <button class="btn btn--solid btn--block" id="addBtn">Add to bag</button>
+
+        <div class="ship-est">
+          <label for="zoneSelect">Deliver to</label>
+          <select id="zoneSelect"></select>
+          <p id="shipEst" aria-live="polite"></p>
+        </div>
+
+        <div class="accordions">
+          <details>
+            <summary>Care &amp; safety</summary>
+            <ol class="care">
+              <li>Stand each candle in a heavy holder with a socket at least 3 cm deep.</li>
+              <li>Keep out of draughts and at least 30 cm from anything above or beside it.</li>
+              <li>Trim the wick to 5 mm before each lighting.</li>
+              <li>Never leave a burning candle unattended. Put it out when 5 cm remain.</li>
+              <li>Check your venue's rules on open flame before the day.</li>
+            </ol>
+          </details>
+          <details>
+            <summary>Storage</summary>
+            <p>Keep candles flat in their box, somewhere cool (below 25 °C) and out of the sun. A metre of wax will soften and bow if left upright in a warm room.</p>
+          </details>
+          <details>
+            <summary>Returns</summary>
+            <p>Unopened boxes can be returned within 30 days. For weddings, order at least four weeks ahead so there is time to replace anything that arrives damaged.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANNER -->
+  <section class="planner section" id="planner" aria-labelledby="planTitle">
+    <div class="wrap planner__grid">
+      <div class="planner__copy">
+        <p class="eyebrow">03 — Planner</p>
+        <h2 id="planTitle">How many candles?</h2>
+        <p>Tell us your guest count and how full you want the table to feel. We round up to whole boxes of twelve.</p>
+      </div>
+      <form class="planner__form" id="plannerForm" onsubmit="return false">
+        <div class="field">
+          <label for="guests">Guests <output id="guestsOut">80</output></label>
+          <input type="range" id="guests" min="10" max="300" step="2" value="80">
+        </div>
+        <fieldset class="field density" id="density">
+          <legend>Table feel</legend>
+        </fieldset>
+        <div class="planner__result" aria-live="polite">
+          <div class="planner__numbers">
+            <p class="big" id="planCandles">60</p>
+            <p class="planner__unit">candles</p>
+          </div>
+          <p class="planner__detail" id="planDetail"></p>
+          <button type="button" class="btn btn--line" id="planAdd">Add to bag</button>
+        </div>
+      </form>
+      <figure class="planner__figure">
+        <svg id="planDrawing" class="drawing" role="img" aria-labelledby="planFigTitle"><title id="planFigTitle">Plan view of a table for ten showing candle placement</title></svg>
+        <figcaption id="planFigCaption">Plan view: ten guests, one table.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PACKAGING + SHIPPING -->
+  <section class="ship section" id="shipping" aria-labelledby="shipTitle">
+    <div class="wrap ship__grid">
+      <div>
+        <p class="eyebrow">04 — The box &amp; shipping</p>
+        <h2 id="shipTitle">Cut to fit.<br>Sent anywhere.</h2>
+        <p>Every candle travels in a box made for exactly this length. A die-cut collar holds it at both ends so it cannot roll or flex, inside a recycled corrugated outer. No plastic.</p>
+        <p class="muted">We ship from Paris. Prices below are per order; additional dozen boxes add a small charge per parcel.</p>
+      </div>
+      <div class="ship-table-wrap">
+        <table class="ship-table" id="shipTable">
+          <caption class="visually-hidden">Shipping prices by destination</caption>
+          <thead><tr><th scope="col">Destination</th><th scope="col">Singles</th><th scope="col">Dozen</th><th scope="col">Time</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="muted small" id="shipNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRADE -->
+  <section class="trade section" id="trade" aria-labelledby="tradeTitle">
+    <div class="wrap trade__grid">
+      <div>
+        <p class="eyebrow">05 — Trade</p>
+        <h2 id="tradeTitle">For planners, venues<br>and stylists.</h2>
+      </div>
+      <div class="trade__list">
+        <dl>
+          <div><dt>Trade pricing</dt><dd>From ten boxes per order, with tiers for regular buyers.</dd></div>
+          <div><dt>Samples</dt><dd>One candle sent to see and burn before you commit a wedding to it.</dd></div>
+          <div><dt>Dates held</dt><dd>Stock reserved against your event date, shipped to the venue.</dd></div>
+        </dl>
+        <a class="link-arrow" id="tradeLink" href="#">Ask about a trade account</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story section" aria-labelledby="storyTitle">
+    <div class="wrap story__grid">
+      <p class="eyebrow" id="storyTitle">06 — Why we make them</p>
+      <blockquote class="story__quote">
+        <p>We wanted our wedding table lit by candles taller than the guests. Nobody made them, so we had them made. These are those candles.</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq section" id="faq" aria-labelledby="faqTitle">
+    <div class="wrap faq__grid">
+      <div>
+        <p class="eyebrow">07 — Questions</p>
+        <h2 id="faqTitle">Asked often.</h2>
+      </div>
+      <div class="faq__list">
+        <details><summary>Will they fit my candle holders?</summary><p>Yes, if the holder takes a standard dinner taper. The base is 2.2 cm. Because the candle is a metre tall, choose a holder that is heavy and has a deep socket — at least 3 cm.</p></details>
+        <details><summary>Will a candle this tall stay straight?</summary><p>The wax blend is chosen for stiffness. Store the candles flat and cool until the day. Once lit they stay upright; a warm room above 28 °C or direct sun can make any tall candle lean.</p></details>
+        <details><summary>Do they drip?</summary><p>Very little, in still air. Draughts are what make any taper drip, so keep them away from open doors and air vents.</p></details>
+        <details><summary>How long do they burn?</summary><p>About 30 hours from a full metre. For a dinner of five hours you will use roughly the top 15 cm, and can relight them another night.</p></details>
+        <details><summary>Can I order other colours or heights?</summary><p>Silk ivory is the only colour for now. For orders of fifty dozen or more we can discuss a custom colour.</p></details>
+        <details><summary>When should I order for a wedding?</summary><p>Four to six weeks before the date. That leaves time for delivery, a test burn, and a replacement if a box arrives damaged.</p></details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__mark" aria-hidden="true">
+      <span>Tall</span>
+      <svg class="footer__candle" viewBox="0 0 40 420" preserveAspectRatio="xMidYMax meet"></svg>
+      <span>Taper</span>
+    </div>
+    <div class="footer__grid">
+      <form class="newsletter" id="newsletter">
+        <label for="email">Letters, rarely. New colours, first.</label>
+        <div class="newsletter__row">
+          <input id="email" type="email" placeholder="Email address" autocomplete="email" required>
+          <button class="btn btn--solid" type="submit">Join</button>
+        </div>
+        <p class="small muted" id="newsletterMsg" aria-live="polite"></p>
+      </form>
+      <nav class="footer__nav" aria-label="Footer">
+        <a href="#shop">Shop</a>
+        <a href="#shipping">Shipping</a>
+        <a href="#trade">Trade</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <p class="small muted footer__legal">© 2026 Tall Taper · talltapercandles.com · Paris</p>
+    </div>
+  </div>
+</footer>
+
+<!-- BAG -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="bag" id="bag" role="dialog" aria-modal="true" aria-labelledby="bagTitle" aria-hidden="true">
+  <div class="bag__head">
+    <h2 id="bagTitle">Bag</h2>
+    <button class="bag__close" id="bagClose" aria-label="Close bag">Close</button>
+  </div>
+  <div class="bag__body" id="bagBody"></div>
+  <div class="bag__foot" id="bagFoot"></div>
+</aside>
+
+<dialog class="preview-dialog" id="previewDialog">
+  <p class="eyebrow">Preview</p>
+  <h2>Checkout is not open yet.</h2>
+  <p>This is an early version of the shop, shared for feedback. Nothing has been charged and no order was placed.</p>
+  <form method="dialog"><button class="btn btn--solid">Back to the shop</button></form>
+</dialog>
+
+<script src="assets/js/store.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
