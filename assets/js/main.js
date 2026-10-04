@@ -286,7 +286,7 @@ function fillZoneSelect(sel) {
 /* ============================================================
    Planner
    ============================================================ */
-const plan = { guests: 80, density: 'classic', height: '100' };
+const plan = { guests: 80, density: 'classic', mix: 50 }; // mix = % of candles that are Nº 100
 
 function renderDensity() {
   const fs = $('#density');
@@ -296,58 +296,52 @@ function renderDensity() {
   $$('input', fs).forEach(r => r.addEventListener('change', e => { plan.density = e.target.value; renderPlan(); }));
 }
 
-function renderPlanHeight() {
-  const fs = $('#planHeight');
-  const opts = [['100', 'Nº 100'], ['75', 'Nº 75'], ['both', 'Both']];
-  fs.innerHTML = `<legend>Height</legend><div class="density__opts">${opts.map(([id, name]) => `
-    <label class="density__opt"><input type="radio" name="planHeight" value="${id}" ${id === plan.height ? 'checked' : ''}><span>${name}</span></label>`).join('')}</div>
-    <p class="density__note">Both splits the table half and half, for a layered look.</p>`;
-  $$('input', fs).forEach(r => r.addEventListener('change', e => { plan.height = e.target.value; renderPlan(); }));
-}
-
 /* cover `need` candles of one height with dozens and singles, as cheaply as possible */
 function coverWith(heightId, need) {
   const c = cart.currency, single = V(`${heightId}-single`), dozen = V(`${heightId}-dozen`);
   let dozens = Math.floor(need / 12), singles = need - dozens * 12;
   if (singles * single.price[c] >= dozen.price[c]) { dozens += 1; singles = 0; }
-  return { heightId, dozens, singles, delivered: dozens * 12 + singles, price: dozens * dozen.price[c] + singles * single.price[c] };
+  return { heightId, need, dozens, singles, delivered: dozens * 12 + singles, price: dozens * dozen.price[c] + singles * single.price[c] };
 }
 
 function planNumbers() {
   const d = CONFIG.densities.find(x => x.id === plan.density);
   const need = Math.ceil(plan.guests * d.perGuest);
-  const parts = plan.height === 'both'
-    ? [coverWith('100', Math.ceil(need / 2)), coverWith('75', Math.floor(need / 2))]
-    : [coverWith(plan.height, need)];
+  const n100 = Math.round(need * plan.mix / 100);
+  const parts = [coverWith('100', n100), coverWith('75', need - n100)];
   return {
-    d, need, parts: parts.filter(p => p.delivered),
+    d, need, parts,
     delivered: parts.reduce((n, p) => n + p.delivered, 0),
     price: parts.reduce((n, p) => n + p.price, 0),
   };
 }
 
-function partWords({ heightId, dozens, singles }) {
+function orderWords({ dozens, singles }) {
   const bits = [];
   if (dozens) bits.push(`${dozens} dozen`);
   if (singles) bits.push(`${singles} ${singles === 1 ? 'single' : 'singles'}`);
-  return `${H(heightId).code}: ${bits.join(' and ')}`;
+  return bits.join(' + ') || '–';
 }
 
 function renderPlan() {
   const { d, need, parts, delivered, price } = planNumbers();
-  $('#guestsOut').textContent = plan.guests;
   $('#densityNote').textContent = d.note + '.';
+  $('#mixOut').textContent = plan.mix === 100 ? 'All Nº 100' : plan.mix === 0 ? 'All Nº 75' : `Nº 100 ${plan.mix}% · Nº 75 ${100 - plan.mix}%`;
   $('#planCandles').textContent = need;
+  $('#planTable tbody').innerHTML = parts.map(p => `
+    <tr class="${p.need ? '' : 'muted-row'}"><td>${H(p.heightId).code}</td><td class="num">${p.need}</td><td>${orderWords(p)}</td><td class="num">${p.need ? money(p.price) : '–'}</td></tr>`).join('');
+  $('#planTable tfoot').innerHTML = `<tr><td>Total</td><td class="num">${delivered}</td><td></td><td class="num">${money(price)}</td></tr>`;
   const spare = delivered - need;
-  $('#planDetail').textContent = `${parts.map(partWords).join('; ')}. ${delivered} candles, ${money(price)}.` +
-    (spare ? ` That leaves ${spare} spare${spare === 1 ? '' : 's'} for the bar or the aisle.` : '');
+  $('#planDetail').textContent = spare ? `Rounding up to whole dozens leaves ${spare} spare${spare === 1 ? '' : 's'}, for the bar or the aisle.` : 'Before delivery, which is added at checkout.';
+  $('#planAdd').disabled = !need;
   drawPlan(d);
 }
 
 function drawPlan(d) {
   const svg = $('#planDrawing');
   const L = 3000, Wt = 1000, x0 = 200, y0 = 400, cy = y0 + Wt / 2;
-  const n = Math.round(10 * d.perGuest);
+  const n = Math.max(1, Math.round(10 * d.perGuest));
+  const n100 = Math.round(n * plan.mix / 100);
   let s = '';
   // chairs and plates, five a side
   for (let i = 0; i < 5; i++) {
@@ -359,22 +353,33 @@ function drawPlan(d) {
   s = `<rect class="table-top" x="${x0}" y="${y0}" width="${L}" height="${Wt}"/>` + s;
   const two = n > 8;
   for (let i = 0; i < n; i++) {
+    // spread the Nº 100s evenly among the Nº 75s
+    const is100 = Math.floor((i + 1) * n100 / n) > Math.floor(i * n100 / n);
     const x = x0 + 180 + (L - 360) * (n === 1 ? .5 : i / (n - 1));
     const y = two ? cy + (i % 2 ? 70 : -70) : cy;
-    s += `<circle class="glow glow--plan" cx="${x}" cy="${y}" r="150"/>
-      <circle class="plaster" cx="${x}" cy="${y}" r="34"/><circle class="plan-candle" cx="${x}" cy="${y}" r="11"/>
-      <circle class="plan-flame" cx="${x}" cy="${y}" r="4"/>`;
+    s += `<circle class="glow glow--plan" cx="${x}" cy="${y}" r="${is100 ? 160 : 105}"/>
+      <circle class="plaster" cx="${x}" cy="${y}" r="34"/><circle class="${is100 ? 'plan-candle' : 'plan-candle plan-candle--75'}" cx="${x}" cy="${y}" r="${is100 ? 11 : 9}"/>
+      <circle class="plan-flame" cx="${x}" cy="${y}" r="${is100 ? 4 : 3}"/>`;
   }
   svg.setAttribute('viewBox', '0 -60 3400 1920');
-  svg.innerHTML = `<title id="planFigTitle">Plan view of a table for ten with ${n} candles</title>` + s;
-  $('#planFigCaption').textContent = `Plan view: a table for ten at ${d.name.toLowerCase()} — ${n} candles.`;
+  svg.innerHTML = `<title id="planFigTitle">Plan view of a table for ten with ${n100} Nº 100 and ${n - n100} Nº 75 candles</title>` + s;
+  const mixWords = [n100 ? `${n100} Nº 100` : '', n - n100 ? `${n - n100} Nº 75` : ''].filter(Boolean).join(' and ');
+  $('#planFigCaption').textContent = `Plan view: a table for ten at ${d.name.toLowerCase()}, ${mixWords}. The larger glow is the Nº 100.`;
 }
 
 function initPlanner() {
   renderDensity();
-  renderPlanHeight();
-  const g = $('#guests');
-  g.addEventListener('input', () => { plan.guests = Number(g.value); renderPlan(); });
+  const num = $('#guestsNum'), slider = $('#guests'), mix = $('#mix');
+  num.addEventListener('input', () => {
+    const v = parseInt(num.value, 10);
+    if (!Number.isFinite(v) || v < 1) return;
+    plan.guests = Math.min(v, 5000);
+    slider.value = Math.max(10, Math.min(300, plan.guests));
+    renderPlan();
+  });
+  num.addEventListener('blur', () => { num.value = plan.guests; });
+  slider.addEventListener('input', () => { plan.guests = Number(slider.value); num.value = plan.guests; renderPlan(); });
+  mix.addEventListener('input', () => { plan.mix = Number(mix.value); renderPlan(); });
   $('#planAdd').addEventListener('click', () => {
     planNumbers().parts.forEach(p => {
       if (p.dozens) cart.add(`${p.heightId}-dozen`, p.dozens);

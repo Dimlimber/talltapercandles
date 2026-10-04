@@ -45,18 +45,19 @@ const CONFIG = {
     ],
   },
 
-  /* Shipping, in EUR (other currencies converted at `fx`).
+  /* Shipping, in EUR (other currencies converted at `fx`), charged on top of
+     the candles at roughly what the carrier charges us.
      One parcel per dozen box; up to six singles of one height share a parcel.
      The most expensive parcel pays its full rate; each further parcel pays
      its height's `extra`. The Nº 75 box is under a metre, so no oversize fees. */
   shipping: {
     singlesPerParcel: 6,
     zones: [
-      { id: 'FR', name: 'France', days: '2–3 days', rates: { 100: { single: 12.9, dozen: 19.9, extra: 12 }, 75: { single: 9.9, dozen: 14.9, extra: 9 } } },
-      { id: 'EU', name: 'European Union', days: '3–5 days', rates: { 100: { single: 19.9, dozen: 34.9, extra: 22 }, 75: { single: 16.9, dozen: 27.9, extra: 18 } } },
-      { id: 'UK', name: 'United Kingdom', days: '3–6 days', rates: { 100: { single: 24.9, dozen: 39.9, extra: 28 }, 75: { single: 19.9, dozen: 32.9, extra: 22 } } },
-      { id: 'NA', name: 'United States, Canada', days: '5–8 days', rates: { 100: { single: 59, dozen: 139, extra: 99 }, 75: { single: 49, dozen: 119, extra: 85 } } },
-      { id: 'ROW', name: 'Rest of world', days: '5–10 days', rates: { 100: { single: 69, dozen: 159, extra: 119 }, 75: { single: 59, dozen: 139, extra: 99 } } },
+      { id: 'FR', name: 'France', days: '2–3 days', rates: { 100: { single: 15.9, dozen: 23.9, extra: 15 }, 75: { single: 9.9, dozen: 16.9, extra: 9 } } },
+      { id: 'EU', name: 'European Union', days: '3–5 days', rates: { 100: { single: 24.9, dozen: 34.9, extra: 25 }, 75: { single: 19.9, dozen: 29.9, extra: 18 } } },
+      { id: 'UK', name: 'United Kingdom', days: '3–6 days', rates: { 100: { single: 29.9, dozen: 44.9, extra: 30 }, 75: { single: 24.9, dozen: 34.9, extra: 24 } } },
+      { id: 'NA', name: 'United States, Canada', days: '5–8 days', rates: { 100: { single: 69, dozen: 149, extra: 110 }, 75: { single: 49, dozen: 99, extra: 80 } } },
+      { id: 'ROW', name: 'Rest of world', days: '5–10 days', rates: { 100: { single: 79, dozen: 159, extra: 119 }, 75: { single: 59, dozen: 119, extra: 90 } } },
     ],
   },
 
