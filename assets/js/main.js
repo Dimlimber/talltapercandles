@@ -160,24 +160,22 @@ function drawBand() {
    Shop: the box, top view
    ============================================================ */
 const BOXES = {
-  single: { L: 1080, W: 70, label: 'Single box · 108 × 7 × 7 cm · 0.5 kg packed' },
-  dozen: { L: 1080, W: 190, label: 'Dozen box · 108 × 19 × 7 cm · two layers of six · 4 kg packed' },
+  single: { L: 1070, W: 75, cols: 1, label: 'Single box · 107 × 7.5 × 7.5 cm · 0.7 kg packed' },
+  dozen: { L: 1070, W: 170, cols: 4, label: 'Dozen box · 107 × 17 × 14 cm · twelve cells, four across, three deep · 4.8 kg packed' },
 };
 function drawBox(id) {
   const b = BOXES[id], svg = $('#boxDrawing');
-  const x0 = 60, cy = 250, y0 = cy - b.W / 2, wall = 6;
+  const x0 = 65, cy = 250, y0 = cy - b.W / 2, wall = 6;
   let s = `<rect class="box-outer" x="${x0}" y="${y0}" width="${b.L}" height="${b.W}"/>
     <rect class="box-inner" x="${x0 + wall}" y="${y0 + wall}" width="${b.L - wall * 2}" height="${b.W - wall * 2}"/>`;
-  const count = id === 'single' ? 1 : 6;
-  const gap = id === 'single' ? 0 : (b.W - wall * 2 - 24) / (count - 1);
-  for (let i = 0; i < count; i++) {
-    const y = id === 'single' ? cy : y0 + wall + 12 + i * gap;
-    s += candleFlat(x0 + 38, y);
+  // full-length paper cradle: a cell per candle, cross-members every 250 mm
+  const inner = b.W - wall * 2, cell = inner / b.cols;
+  for (let i = 1; i < b.cols; i++) s += hline(x0 + wall, x0 + b.L - wall, y0 + wall + i * cell, 'hair hair--soft');
+  for (let k = 0; k < 5; k++) {
+    const cx = x0 + 30 + k * 250;
+    s += `<rect class="collar" x="${cx}" y="${y0 + wall}" width="10" height="${inner}"/>`;
   }
-  // die-cut collars at each end
-  [x0 + 70, x0 + b.L - 70].forEach(cx => {
-    s += `<rect class="collar" x="${cx - 9}" y="${y0 + wall}" width="18" height="${b.W - wall * 2}"/>`;
-  });
+  for (let i = 0; i < b.cols; i++) s += candleFlat(x0 + 24, y0 + wall + cell * (i + .5));
   s += dimH(x0, x0 + b.L, y0 - 34, `${b.L} mm`, { size: 17 });
   s += `${vline(x0 + b.L + 34, y0, y0 + b.W)}${hline(x0 + b.L + 26, x0 + b.L + 42, y0)}${hline(x0 + b.L + 26, x0 + b.L + 42, y0 + b.W)}`;
   s += text(x0 + b.L + 34, y0 + b.W + 36, `${b.W} mm`, { size: 17, anchor: 'middle' });
@@ -209,7 +207,7 @@ function renderVariants() {
         <span class="variant__name">${v.title}</span>
         <span class="variant__price">${money(v.price[c])}</span>
         <span class="variant__sub">${v.sub}</span>
-        <span class="variant__each">${v.units > 1 ? `${money(each)} each · <span class="variant__save">save ${save}%</span>` : 'per candle'}</span>
+        <span class="variant__each">${v.units > 1 ? `${money(Math.round(each))} each · <span class="variant__save">save ${save}%</span>` : 'per candle'}</span>
       </span>
     </label>`;
   }).join('');
@@ -230,7 +228,7 @@ function renderBuy() {
   const zone = CONFIG.shipping.zones.find(z => z.id === cart.zone);
   const ship = shippingQuote(items, cart.zone, c, v.price[c] * state.qty);
   $('#shipEst').innerHTML = `${ship === 0 ? 'Free delivery' : `Delivery ${money(ship)}`} <span class="muted">· ${zone.days}</span>`;
-  $('[data-price-from]').textContent = money(V('dozen').price[c] / 12);
+  $('[data-price-from]').textContent = money(Math.round(V('dozen').price[c] / 12));
 }
 
 function initBuy() {
@@ -327,8 +325,8 @@ function renderShipTable() {
   const c = cart.currency;
   $('#shipTable tbody').innerHTML = CONFIG.shipping.zones.map(z => `
     <tr><td>${z.name}</td><td>${money(z.first[c])}</td><td>${money(z.firstDozen[c])}</td><td>${z.days}</td></tr>`).join('');
-  const free = CONFIG.shipping.zones.filter(z => z.freeOver).map(z => `${money(z.freeOver[c])} to ${z.id === 'FR' ? 'France' : 'the rest of the EU'}`);
-  $('#shipNote').textContent = `Free delivery on orders over ${free.join(' and ')}. Prices include VAT for EU addresses; elsewhere, import duties may apply.`;
+  const fr = CONFIG.shipping.zones.find(z => z.id === 'FR'), eu = CONFIG.shipping.zones.find(z => z.id === 'EU');
+  $('#shipNote').textContent = `Every dozen ships free within France, and orders over ${money(eu.freeOver[c])} ship free across the EU. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
 }
 
 /* ============================================================
