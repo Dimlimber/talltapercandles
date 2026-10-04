@@ -8,6 +8,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const money = (n, c = cart.currency) => Money.format(n, c);
 const P = CONFIG.product;
 const V = id => P.variants.find(v => v.id === id);
+const H = id => P.heights.find(h => h.id === id);
 
 /* ============================================================
    Drawing primitives
@@ -72,20 +73,23 @@ function drawHero() {
   const svg = $('#heroDrawing');
   const base = 1140;
   svg.innerHTML = `
-    ${candle(150, base, { h: 250, w: 22, tw: 16, glow: 95, fh: 36, fw: 12 })}
-    ${candle(390, base, { h: 1000, rise: true, glow: 180 })}
+    ${candle(120, base, { h: 250, w: 22, tw: 16, glow: 90, fh: 36, fw: 12 })}
+    ${candle(290, base, { h: 750, rise: true, glow: 150, fh: 38 })}
+    ${candle(460, base, { h: 1000, rise: true, glow: 180 })}
     <g class="late">
-      ${hline(40, 520, base)}
-      ${dimV(92, base - 250, base, '250 mm', { size: 17 })}
-      ${dimV(332, base - 1000, base, '1000 mm  ·  39⅜ in', { size: 17 })}
-      ${text(150, base + 34, 'DINNER TAPER', { size: 15, anchor: 'middle' })}
-      ${text(390, base + 34, 'Nº 100', { size: 15, anchor: 'middle' })}
+      ${hline(30, 560, base)}
+      ${dimV(70, base - 250, base, '250 mm', { size: 17 })}
+      ${dimV(240, base - 750, base, '750 mm  ·  29½ in', { size: 17 })}
+      ${dimV(410, base - 1000, base, '1000 mm  ·  39⅜ in', { size: 17 })}
+      ${text(120, base + 34, 'DINNER TAPER', { size: 15, anchor: 'middle' })}
+      ${text(290, base + 34, 'Nº 75', { size: 15, anchor: 'middle' })}
+      ${text(460, base + 34, 'Nº 100', { size: 15, anchor: 'middle' })}
     </g>`;
   setHeroView();
 }
 const mqNarrow = window.matchMedia('(max-width: 860px)');
 function setHeroView() {
-  $('#heroDrawing').setAttribute('viewBox', mqNarrow.matches ? '300 -60 150 1250' : '20 -60 520 1250');
+  $('#heroDrawing').setAttribute('viewBox', mqNarrow.matches ? '205 -60 290 1250' : '0 -60 580 1250');
 }
 mqNarrow.addEventListener?.('change', setHeroView);
 
@@ -108,6 +112,7 @@ function drawElevation() {
       M${sx + dir * 30} ${Y(160)} C${sx + dir * 140} ${Y(200)} ${ex - dir * 140} ${Y(200)} ${ex - dir * 30} ${Y(160)}"/>`;
   };
   const flameTop = Y(T + HOLD + 1000 + 15);
+  const flame75 = Y(T + HOLD + 750 + 15);
   $('#elevation').innerHTML += `
     <rect class="eye-band" x="-180" y="${Y(1250)}" width="1760" height="150"/>
     ${text(-170, Y(1250) - 22, 'SEATED EYE LINE  1.10–1.25 M', { size: 30 })}
@@ -117,20 +122,25 @@ function drawElevation() {
     ${vline(230, Y(T) + 34, floor, 'hair hair--soft')}
     ${vline(1170, Y(T) + 34, floor, 'hair hair--soft')}
     ${hline(-180, 1580, floor)}
-    ${holder(500, Y(T), HOLD)}
-    ${candle(500, Y(T + HOLD), { h: 250, glow: 170, fh: 40, wick: 3 })}
-    ${holder(860, Y(T), HOLD)}
-    ${candle(860, Y(T + HOLD), { h: 1000, glow: 240, wick: 3 })}
-    <path class="hair hair--soft hair--dash" d="M890 ${flameTop}H1310"/>
+    ${holder(420, Y(T), HOLD)}
+    ${candle(420, Y(T + HOLD), { h: 250, glow: 170, fh: 40, wick: 3 })}
+    ${holder(660, Y(T), HOLD)}
+    ${candle(660, Y(T + HOLD), { h: 750, glow: 220, wick: 3 })}
+    ${holder(900, Y(T), HOLD)}
+    ${candle(900, Y(T + HOLD), { h: 1000, glow: 240, wick: 3 })}
+    <path class="hair hair--soft hair--dash" d="M930 ${flameTop}H1310"/>
+    <path class="hair hair--soft hair--dash" d="M690 ${flame75}H1310"/>
     <path class="hair hair--soft hair--dash" d="M1240 ${Y(T)}H1310"/>
     ${vline(1330, flameTop, floor)}
-    ${hline(1316, 1344, flameTop)}${hline(1316, 1344, Y(T))}${hline(1316, 1344, floor)}
+    ${hline(1316, 1344, flameTop)}${hline(1316, 1344, flame75)}${hline(1316, 1344, Y(T))}${hline(1316, 1344, floor)}
+    ${text(1310, flame75 - 18, '≈ 1.6 M', { size: 30, anchor: 'end' })}
     ${text(1310, flameTop - 18, '≈ 1.85 M', { size: 30, anchor: 'end' })}
     ${text(1310, Y(T) - 18, '0.75 M', { size: 30, anchor: 'end' })}
-    ${text(450, Y(T + HOLD + 250) - 70, 'DINNER TAPER', { size: 30, anchor: 'end' })}
-    ${text(450, Y(T + HOLD + 250) - 30, 'flame at eye level', { size: 30, anchor: 'end' })}
-    ${text(810, flameTop + 40, 'Nº 100', { size: 30, anchor: 'end' })}
-    ${text(810, flameTop + 80, 'flame above it', { size: 30, anchor: 'end' })}`;
+    ${text(370, Y(T + HOLD + 250) - 70, 'DINNER TAPER', { size: 30, anchor: 'end' })}
+    ${text(370, Y(T + HOLD + 250) - 30, 'flame at eye level', { size: 30, anchor: 'end' })}
+    ${text(615, flame75 + 40, 'Nº 75', { size: 30, anchor: 'end' })}
+    ${text(855, flameTop + 40, 'Nº 100', { size: 30, anchor: 'end' })}
+    ${text(855, flameTop + 80, 'both flames above it', { size: 30, anchor: 'end' })}`;
 }
 
 /* ============================================================
@@ -138,7 +148,8 @@ function drawElevation() {
    ============================================================ */
 function drawBand() {
   const W = 3000, top = 1300;
-  const holds = [150, 60, 240, 60, 150, 240, 60, 150, 60, 240]; // three heights, one rhythm
+  const holds = [150, 60, 240, 60, 150, 240, 60, 150, 60, 240]; // three holder heights, one rhythm
+  const tall = [1000, 750, 1000, 750, 1000, 1000, 750, 1000, 750, 1000]; // Nº 100 and Nº 75
   let s = `<rect x="0" y="${top}" width="${W}" height="400" class="cloth"/>` + hline(0, W, top);
   const n = holds.length, step = W / n;
   for (let i = 0; i < 6; i++) {
@@ -149,7 +160,7 @@ function drawBand() {
   }
   holds.forEach((hh, i) => {
     const x = step * (i + .5) + ((i * 37) % 50) - 25;
-    s += holder(x, top, hh, 64) + candle(x, top - hh, { glow: 260, fh: 42, fw: 14, wick: 2 });
+    s += holder(x, top, hh, 64) + candle(x, top - hh, { h: tall[i], glow: 260, fh: 42, fw: 14, wick: 2 });
   });
   const svg = $('#band');
   svg.setAttribute('viewBox', `0 -120 ${W} 1620`);
@@ -160,75 +171,99 @@ function drawBand() {
    Shop: the box, top view
    ============================================================ */
 const BOXES = {
-  pair: { L: 1070, W: 90, cols: 2, label: 'Pair box · 107 × 9 × 6 cm · 1.1 kg packed' },
-  dozen: { L: 1070, W: 170, cols: 4, label: 'Dozen box · 107 × 17 × 14 cm · twelve cells, four across, three deep · 4.8 kg packed' },
+  single: { W: 75, cols: 1, size: '7.5 × 7.5', note: { 100: '0.7 kg packed', 75: '0.5 kg packed' } },
+  dozen: { W: 170, cols: 4, size: '17 × 14', note: { 100: 'twelve cells, four across, three deep · about 5 kg', 75: 'twelve cells, four across, three deep · about 4 kg' } },
 };
-function drawBox(id) {
-  const b = BOXES[id], svg = $('#boxDrawing');
-  const x0 = 65, cy = 250, y0 = cy - b.W / 2, wall = 6;
-  let s = `<rect class="box-outer" x="${x0}" y="${y0}" width="${b.L}" height="${b.W}"/>
-    <rect class="box-inner" x="${x0 + wall}" y="${y0 + wall}" width="${b.L - wall * 2}" height="${b.W - wall * 2}"/>`;
+function drawBox(heightId, format) {
+  const b = BOXES[format], h = H(heightId), svg = $('#boxDrawing');
+  const L = h.cm * 10 + 70, x0 = (1200 - L) / 2, cy = 250, y0 = cy - b.W / 2, wall = 6;
+  let s = `<rect class="box-outer" x="${x0}" y="${y0}" width="${L}" height="${b.W}"/>
+    <rect class="box-inner" x="${x0 + wall}" y="${y0 + wall}" width="${L - wall * 2}" height="${b.W - wall * 2}"/>`;
   // full-length paper cradle: a cell per candle, cross-members every 250 mm
   const inner = b.W - wall * 2, cell = inner / b.cols;
-  for (let i = 1; i < b.cols; i++) s += hline(x0 + wall, x0 + b.L - wall, y0 + wall + i * cell, 'hair hair--soft');
-  for (let k = 0; k < 5; k++) {
-    const cx = x0 + 30 + k * 250;
+  for (let i = 1; i < b.cols; i++) s += hline(x0 + wall, x0 + L - wall, y0 + wall + i * cell, 'hair hair--soft');
+  for (let cx = x0 + 30; cx < x0 + L - 20; cx += 250) {
     s += `<rect class="collar" x="${cx}" y="${y0 + wall}" width="10" height="${inner}"/>`;
   }
-  for (let i = 0; i < b.cols; i++) s += candleFlat(x0 + 24, y0 + wall + cell * (i + .5));
-  s += dimH(x0, x0 + b.L, y0 - 34, `${b.L} mm`, { size: 17 });
-  s += `${vline(x0 + b.L + 34, y0, y0 + b.W)}${hline(x0 + b.L + 26, x0 + b.L + 42, y0)}${hline(x0 + b.L + 26, x0 + b.L + 42, y0 + b.W)}`;
-  s += text(x0 + b.L + 34, y0 + b.W + 36, `${b.W} mm`, { size: 17, anchor: 'middle' });
+  for (let i = 0; i < b.cols; i++) s += candleFlat(x0 + 24, y0 + wall + cell * (i + .5), { h: h.cm * 10 });
+  s += dimH(x0, x0 + L, y0 - 34, `${L} mm`, { size: 17 });
+  s += `${vline(x0 + L + 34, y0, y0 + b.W)}${hline(x0 + L + 26, x0 + L + 42, y0)}${hline(x0 + L + 26, x0 + L + 42, y0 + b.W)}`;
+  s += text(x0 + L + 34, y0 + b.W + 36, `${b.W} mm`, { size: 17, anchor: 'middle' });
   svg.style.opacity = 0;
   setTimeout(() => {
-    svg.innerHTML = `<title id="boxTitle">Top view of the ${id} box, lid off</title>` + s;
+    svg.innerHTML = `<title id="boxTitle">Top view of the ${h.code} ${format} box, lid off</title>` + s;
     svg.style.opacity = 1;
   }, svg.innerHTML.includes('box-outer') ? 180 : 0);
-  $('#boxCaption').innerHTML = `<span>${b.label}</span><span>Top view, lid off</span>`;
+  const label = `${format === 'single' ? 'Single' : 'Dozen'} box · ${(L / 10).toString()} × ${b.size} cm · ${b.note[heightId]}`;
+  $('#boxCaption').innerHTML = `<span>${label}</span><span>Top view, lid off</span>`;
 }
 
 /* ============================================================
    Product panel
    ============================================================ */
-const state = { variant: 'dozen', qty: 1 };
+const state = { height: '100', format: 'dozen', qty: 1 };
+const vid = () => `${state.height}-${state.format}`;
+
+function renderHeights() {
+  $('#heightList').innerHTML = P.heights.map(h => `
+    <label class="seg__opt"><input type="radio" name="height" value="${h.id}" ${h.id === state.height ? 'checked' : ''}><span><b>${h.code}</b> ${h.cm} cm</span></label>`).join('');
+  $$('#heightList input').forEach(r => r.addEventListener('change', e => {
+    state.height = e.target.value;
+    renderProduct();
+  }));
+}
 
 function renderSpecs() {
-  $('#specs').innerHTML = P.specs.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  const h = H(state.height);
+  const rows = [['Height', `${h.cm} cm · ${h.inches} in`], ...P.specs.slice(0, 4), ['Burn time', h.burn], ...P.specs.slice(4)];
+  $('#specs').innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
 }
 
 function renderVariants() {
-  const pair = V('pair'), c = cart.currency;
-  $('#variantList').innerHTML = P.variants.map(v => {
+  const c = cart.currency;
+  const single = V(`${state.height}-single`);
+  $('#variantList').innerHTML = P.variants.filter(v => v.height === state.height).map(v => {
     const each = v.price[c] / v.units;
-    const save = v.id !== 'pair' ? Math.round((1 - each / (pair.price[c] / pair.units)) * 100) : 0;
+    const save = v.format === 'dozen' ? Math.round((1 - each / single.price[c]) * 100) : 0;
     return `<label class="variant">
-      <input type="radio" name="variant" value="${v.id}" ${v.id === state.variant ? 'checked' : ''}>
+      <input type="radio" name="variant" value="${v.format}" ${v.format === state.format ? 'checked' : ''}>
       <span class="variant__box">
         <span class="variant__name">${v.title}</span>
         <span class="variant__price">${money(v.price[c])}</span>
         <span class="variant__sub">${v.sub}</span>
-        <span class="variant__each">${save ? `${money(Math.round(each))} each · <span class="variant__save">save ${save}%</span>` : `${money(Math.round(each))} each`}</span>
+        <span class="variant__each">${save ? `${money(Math.round(each * 100) / 100)} each · <span class="variant__save">save ${save}%</span>` : 'per candle'}</span>
       </span>
     </label>`;
   }).join('');
   $$('#variantList input').forEach(r => r.addEventListener('change', e => {
-    state.variant = e.target.value;
-    drawBox(state.variant);
+    state.format = e.target.value;
+    drawBox(state.height, state.format);
     renderBuy();
   }));
 }
 
+function renderProduct() {
+  const h = H(state.height);
+  $('#buyCode').textContent = h.code;
+  $('#shopTitle').textContent = h.name;
+  $('#buySub').textContent = `Silk ivory · unscented · ${h.cm} cm`;
+  renderSpecs();
+  renderVariants();
+  drawBox(state.height, state.format);
+  renderBuy();
+}
+
 function renderBuy() {
-  const v = V(state.variant), c = cart.currency;
+  const v = V(vid()), c = cart.currency;
   $('#qty').textContent = state.qty;
-  $('#qtyLabel').textContent = v.id === 'pair' ? 'Pairs' : 'Boxes';
+  $('#qtyLabel').textContent = v.format === 'single' ? 'Candles' : 'Boxes';
   const candles = state.qty * v.units;
   $('#buySummary').textContent = `${candles} ${candles === 1 ? 'candle' : 'candles'} · ${money(v.price[c] * state.qty)}`;
-  const items = { [v.id]: state.qty };
   const zone = CONFIG.shipping.zones.find(z => z.id === cart.zone);
-  const ship = shippingQuote(items, cart.zone, c, v.price[c] * state.qty);
-  $('#shipEst').innerHTML = `${ship === 0 ? 'Free delivery' : `Delivery ${money(ship)}`} <span class="muted">· ${zone.days}</span>`;
-  $('[data-price-from]').textContent = money(Math.round(V('dozen').price[c] / 12));
+  const ship = shippingQuote({ [v.id]: state.qty }, cart.zone, c);
+  $('#shipEst').innerHTML = `Delivery ${money(ship)} <span class="muted">· ${zone.days}</span>`;
+  const cheapest = Math.min(...P.variants.filter(x => x.format === 'dozen').map(x => x.price[c] / x.units));
+  $('[data-price-from]').textContent = `from ${money(Math.round(cheapest))}`;
 }
 
 function initBuy() {
@@ -237,7 +272,7 @@ function initBuy() {
     renderBuy();
   }));
   $('#addBtn').addEventListener('click', () => {
-    cart.add(state.variant, state.qty);
+    cart.add(vid(), state.qty);
     openBag();
   });
 }
@@ -251,7 +286,7 @@ function fillZoneSelect(sel) {
 /* ============================================================
    Planner
    ============================================================ */
-const plan = { guests: 80, density: 'classic' };
+const plan = { guests: 80, density: 'classic', height: '100' };
 
 function renderDensity() {
   const fs = $('#density');
@@ -261,35 +296,51 @@ function renderDensity() {
   $$('input', fs).forEach(r => r.addEventListener('change', e => { plan.density = e.target.value; renderPlan(); }));
 }
 
+function renderPlanHeight() {
+  const fs = $('#planHeight');
+  const opts = [['100', 'Nº 100'], ['75', 'Nº 75'], ['both', 'Both']];
+  fs.innerHTML = `<legend>Height</legend><div class="density__opts">${opts.map(([id, name]) => `
+    <label class="density__opt"><input type="radio" name="planHeight" value="${id}" ${id === plan.height ? 'checked' : ''}><span>${name}</span></label>`).join('')}</div>
+    <p class="density__note">Both splits the table half and half, for a layered look.</p>`;
+  $$('input', fs).forEach(r => r.addEventListener('change', e => { plan.height = e.target.value; renderPlan(); }));
+}
+
+/* cover `need` candles of one height with dozens and singles, as cheaply as possible */
+function coverWith(heightId, need) {
+  const c = cart.currency, single = V(`${heightId}-single`), dozen = V(`${heightId}-dozen`);
+  let dozens = Math.floor(need / 12), singles = need - dozens * 12;
+  if (singles * single.price[c] >= dozen.price[c]) { dozens += 1; singles = 0; }
+  return { heightId, dozens, singles, delivered: dozens * 12 + singles, price: dozens * dozen.price[c] + singles * single.price[c] };
+}
+
 function planNumbers() {
   const d = CONFIG.densities.find(x => x.id === plan.density);
   const need = Math.ceil(plan.guests * d.perGuest);
-  let dozens = Math.floor(need / 12);
-  let pairs = Math.ceil((need - dozens * 12) / 2);
-  const c = cart.currency;
-  // a dozen is cheaper than enough loose pairs to cover the remainder
-  if (pairs * V('pair').price[c] >= V('dozen').price[c]) { dozens += 1; pairs = 0; }
-  const delivered = dozens * 12 + pairs * 2;
-  const price = dozens * V('dozen').price[c] + pairs * V('pair').price[c];
-  return { d, need, dozens, pairs, delivered, price };
+  const parts = plan.height === 'both'
+    ? [coverWith('100', Math.ceil(need / 2)), coverWith('75', Math.floor(need / 2))]
+    : [coverWith(plan.height, need)];
+  return {
+    d, need, parts: parts.filter(p => p.delivered),
+    delivered: parts.reduce((n, p) => n + p.delivered, 0),
+    price: parts.reduce((n, p) => n + p.price, 0),
+  };
 }
 
-function planWords(dozens, pairs) {
-  const parts = [];
-  if (dozens) parts.push(`${dozens} ${dozens === 1 ? 'dozen' : 'dozen'}`);
-  if (pairs) parts.push(`${pairs} ${pairs === 1 ? 'pair' : 'pairs'}`);
-  return parts.join(' and ');
+function partWords({ heightId, dozens, singles }) {
+  const bits = [];
+  if (dozens) bits.push(`${dozens} dozen`);
+  if (singles) bits.push(`${singles} ${singles === 1 ? 'single' : 'singles'}`);
+  return `${H(heightId).code}: ${bits.join(' and ')}`;
 }
 
 function renderPlan() {
-  const { d, need, dozens, pairs, delivered, price } = planNumbers();
+  const { d, need, parts, delivered, price } = planNumbers();
   $('#guestsOut').textContent = plan.guests;
   $('#densityNote').textContent = d.note + '.';
   $('#planCandles').textContent = need;
   const spare = delivered - need;
-  $('#planDetail').textContent = `${planWords(dozens, pairs)} — ${delivered} candles, ${money(price)}.` +
+  $('#planDetail').textContent = `${parts.map(partWords).join('; ')}. ${delivered} candles, ${money(price)}.` +
     (spare ? ` That leaves ${spare} spare${spare === 1 ? '' : 's'} for the bar or the aisle.` : '');
-  $('#planAdd').textContent = `Add ${planWords(dozens, pairs)} to bag`;
   drawPlan(d);
 }
 
@@ -321,12 +372,14 @@ function drawPlan(d) {
 
 function initPlanner() {
   renderDensity();
+  renderPlanHeight();
   const g = $('#guests');
   g.addEventListener('input', () => { plan.guests = Number(g.value); renderPlan(); });
   $('#planAdd').addEventListener('click', () => {
-    const { dozens, pairs } = planNumbers();
-    if (dozens) cart.add('dozen', dozens);
-    if (pairs) cart.add('pair', pairs);
+    planNumbers().parts.forEach(p => {
+      if (p.dozens) cart.add(`${p.heightId}-dozen`, p.dozens);
+      if (p.singles) cart.add(`${p.heightId}-single`, p.singles);
+    });
     openBag();
   });
   renderPlan();
@@ -336,22 +389,22 @@ function initPlanner() {
    Shipping table
    ============================================================ */
 function renderShipTable() {
-  const c = cart.currency;
+  const c = cart.currency, m = eur => money(Money.convert(eur, c));
   $('#shipTable tbody').innerHTML = CONFIG.shipping.zones.map(z => `
-    <tr><td>${z.name}</td><td>${money(z.first[c])}</td><td>${money(z.firstDozen[c])}</td><td>${z.days}</td></tr>`).join('');
-  $('#shipNote').textContent = `Each dozen box travels as its own parcel; up to three pairs share one. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
+    <tr><td>${z.name}</td><td>${m(z.rates[100].single)}</td><td>${m(z.rates[100].dozen)}</td><td>${m(z.rates[75].single)}</td><td>${m(z.rates[75].dozen)}</td><td>${z.days}</td></tr>`).join('');
+  $('#shipNote').textContent = `Each dozen box travels as its own parcel; up to six singles share one. The Nº 75 box is under a metre long, so it costs less to send. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
 }
 
 /* ============================================================
    Bag
    ============================================================ */
-const miniCandles = units => {
-  const n = units > 2 ? 3 : 2;
+const miniCandles = (units, heightId) => {
+  const n = units > 1 ? 3 : 1, len = heightId === '75' ? 44 : 58, top = 72 - len;
   let s = '';
   for (let i = 0; i < n; i++) {
-    const x = n === 2 ? 13 + i * 10 : 8 + i * 10;
-    s += `<rect x="${x - 1.5}" y="14" width="3" height="58" fill="#E9DDC7" stroke="rgba(31,29,27,.3)" stroke-width=".6"/>
-      <path d="M${x} 4 C${x - 2.6} 8.5 ${x - 2.4} 11.4 ${x} 13 C${x + 2.4} 11.4 ${x + 2.6} 8.5 ${x} 4Z" fill="#E39A46"/>`;
+    const x = n === 1 ? 18 : 8 + i * 10;
+    s += `<rect x="${x - 1.5}" y="${top}" width="3" height="${len}" fill="#E9DDC7" stroke="rgba(31,29,27,.3)" stroke-width=".6"/>
+      <path d="M${x} ${top - 10} C${x - 2.6} ${top - 5.5} ${x - 2.4} ${top - 2.6} ${x} ${top - 1} C${x + 2.4} ${top - 2.6} ${x + 2.6} ${top - 5.5} ${x} ${top - 10}Z" fill="#E39A46"/>`;
   }
   return `<svg class="bag-line__icon" viewBox="0 0 36 76" aria-hidden="true">${s}</svg>`;
 };
@@ -370,10 +423,10 @@ function renderBag() {
   }
   body.innerHTML = lines.map(l => `
     <div class="bag-line">
-      ${miniCandles(l.v.units)}
+      ${miniCandles(l.v.units, l.v.height)}
       <div>
-        <p class="bag-line__name">${P.title} — ${l.v.title}</p>
-        <p class="bag-line__sub">${P.colour} · ${l.qty * l.v.units} ${l.qty * l.v.units === 1 ? 'candle' : 'candles'}</p>
+        <p class="bag-line__name">${H(l.v.height).code} — ${l.v.title}</p>
+        <p class="bag-line__sub">${P.colour} · ${H(l.v.height).cm} cm · ${l.qty * l.v.units} ${l.qty * l.v.units === 1 ? 'candle' : 'candles'}</p>
         <div class="stepper" role="group" aria-label="Quantity of ${l.v.title}">
           <button type="button" data-line="${l.v.id}" data-step="-1" aria-label="One fewer">−</button>
           <output>${l.qty}</output>
@@ -390,7 +443,7 @@ function renderBag() {
   foot.innerHTML = `
     <div class="bag__row"><span>Subtotal · ${cart.candles()} candles</span><span>${money(sub)}</span></div>
     <div class="bag__row"><label for="bagZone">Delivery to</label><select id="bagZone"></select></div>
-    <div class="bag__row"><span>Delivery</span><span>${ship === 0 ? 'Free' : money(ship)}</span></div>
+    <div class="bag__row"><span>Delivery</span><span>${money(ship)}</span></div>
     <div class="bag__row bag__row--total"><span>Total</span><span>${money(sub + ship)}</span></div>
     <button class="btn btn--solid btn--block" id="checkoutBtn">Checkout</button>
     <p class="bag__note">Order four weeks before your date. Import duties outside the EU are shown at checkout.</p>`;
@@ -474,15 +527,14 @@ function initForms() {
 /* ============================================================
    Boot
    ============================================================ */
-function renderPrices() { renderVariants(); renderBuy(); renderShipTable(); renderPlan(); }
+function renderPrices() { renderVariants(); renderBuy(); renderShipTable(); renderPlan(); renderBag(); }
 
 drawHero();
 drawElevation();
 drawBand();
 drawFooter();
-renderSpecs();
-renderVariants();
-drawBox(state.variant);
+renderHeights();
+renderProduct();
 initBuy();
 fillZoneSelect($('#zoneSelect'));
 initPlanner();
