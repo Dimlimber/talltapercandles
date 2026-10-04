@@ -160,7 +160,7 @@ function drawBand() {
    Shop: the box, top view
    ============================================================ */
 const BOXES = {
-  single: { L: 1070, W: 75, cols: 1, label: 'Single box · 107 × 7.5 × 7.5 cm · 0.7 kg packed' },
+  pair: { L: 1070, W: 90, cols: 2, label: 'Pair box · 107 × 9 × 6 cm · 1.1 kg packed' },
   dozen: { L: 1070, W: 170, cols: 4, label: 'Dozen box · 107 × 17 × 14 cm · twelve cells, four across, three deep · 4.8 kg packed' },
 };
 function drawBox(id) {
@@ -197,17 +197,17 @@ function renderSpecs() {
 }
 
 function renderVariants() {
-  const single = V('single'), c = cart.currency;
+  const pair = V('pair'), c = cart.currency;
   $('#variantList').innerHTML = P.variants.map(v => {
     const each = v.price[c] / v.units;
-    const save = v.units > 1 ? Math.round((1 - each / single.price[c]) * 100) : 0;
+    const save = v.id !== 'pair' ? Math.round((1 - each / (pair.price[c] / pair.units)) * 100) : 0;
     return `<label class="variant">
       <input type="radio" name="variant" value="${v.id}" ${v.id === state.variant ? 'checked' : ''}>
       <span class="variant__box">
         <span class="variant__name">${v.title}</span>
         <span class="variant__price">${money(v.price[c])}</span>
         <span class="variant__sub">${v.sub}</span>
-        <span class="variant__each">${v.units > 1 ? `${money(Math.round(each))} each · <span class="variant__save">save ${save}%</span>` : 'per candle'}</span>
+        <span class="variant__each">${save ? `${money(Math.round(each))} each · <span class="variant__save">save ${save}%</span>` : `${money(Math.round(each))} each`}</span>
       </span>
     </label>`;
   }).join('');
@@ -221,7 +221,7 @@ function renderVariants() {
 function renderBuy() {
   const v = V(state.variant), c = cart.currency;
   $('#qty').textContent = state.qty;
-  $('#qtyLabel').textContent = v.units > 1 ? 'Boxes' : 'Candles';
+  $('#qtyLabel').textContent = v.id === 'pair' ? 'Pairs' : 'Boxes';
   const candles = state.qty * v.units;
   $('#buySummary').textContent = `${candles} ${candles === 1 ? 'candle' : 'candles'} · ${money(v.price[c] * state.qty)}`;
   const items = { [v.id]: state.qty };
@@ -264,20 +264,32 @@ function renderDensity() {
 function planNumbers() {
   const d = CONFIG.densities.find(x => x.id === plan.density);
   const need = Math.ceil(plan.guests * d.perGuest);
-  const boxes = Math.ceil(need / 12);
-  return { d, need, boxes, delivered: boxes * 12 };
+  let dozens = Math.floor(need / 12);
+  let pairs = Math.ceil((need - dozens * 12) / 2);
+  const c = cart.currency;
+  // a dozen is cheaper than enough loose pairs to cover the remainder
+  if (pairs * V('pair').price[c] >= V('dozen').price[c]) { dozens += 1; pairs = 0; }
+  const delivered = dozens * 12 + pairs * 2;
+  const price = dozens * V('dozen').price[c] + pairs * V('pair').price[c];
+  return { d, need, dozens, pairs, delivered, price };
+}
+
+function planWords(dozens, pairs) {
+  const parts = [];
+  if (dozens) parts.push(`${dozens} ${dozens === 1 ? 'dozen' : 'dozen'}`);
+  if (pairs) parts.push(`${pairs} ${pairs === 1 ? 'pair' : 'pairs'}`);
+  return parts.join(' and ');
 }
 
 function renderPlan() {
-  const { d, need, boxes, delivered } = planNumbers();
-  const c = cart.currency;
+  const { d, need, dozens, pairs, delivered, price } = planNumbers();
   $('#guestsOut').textContent = plan.guests;
   $('#densityNote').textContent = d.note + '.';
   $('#planCandles').textContent = need;
   const spare = delivered - need;
-  $('#planDetail').textContent = `${boxes} ${boxes === 1 ? 'box' : 'boxes'} of twelve — ${delivered} candles, ${money(V('dozen').price[c] * boxes)}.` +
+  $('#planDetail').textContent = `${planWords(dozens, pairs)} — ${delivered} candles, ${money(price)}.` +
     (spare ? ` That leaves ${spare} spare${spare === 1 ? '' : 's'} for the bar or the aisle.` : '');
-  $('#planAdd').textContent = `Add ${boxes} ${boxes === 1 ? 'box' : 'boxes'} to bag`;
+  $('#planAdd').textContent = `Add ${planWords(dozens, pairs)} to bag`;
   drawPlan(d);
 }
 
@@ -312,7 +324,9 @@ function initPlanner() {
   const g = $('#guests');
   g.addEventListener('input', () => { plan.guests = Number(g.value); renderPlan(); });
   $('#planAdd').addEventListener('click', () => {
-    cart.add('dozen', planNumbers().boxes);
+    const { dozens, pairs } = planNumbers();
+    if (dozens) cart.add('dozen', dozens);
+    if (pairs) cart.add('pair', pairs);
     openBag();
   });
   renderPlan();
@@ -325,18 +339,17 @@ function renderShipTable() {
   const c = cart.currency;
   $('#shipTable tbody').innerHTML = CONFIG.shipping.zones.map(z => `
     <tr><td>${z.name}</td><td>${money(z.first[c])}</td><td>${money(z.firstDozen[c])}</td><td>${z.days}</td></tr>`).join('');
-  const fr = CONFIG.shipping.zones.find(z => z.id === 'FR'), eu = CONFIG.shipping.zones.find(z => z.id === 'EU');
-  $('#shipNote').textContent = `Every dozen ships free within France, and orders over ${money(eu.freeOver[c])} ship free across the EU. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
+  $('#shipNote').textContent = `Each dozen box travels as its own parcel; up to three pairs share one. Duties and taxes are paid at checkout, so nothing is due on delivery.`;
 }
 
 /* ============================================================
    Bag
    ============================================================ */
 const miniCandles = units => {
-  const n = units > 1 ? 3 : 1;
+  const n = units > 2 ? 3 : 2;
   let s = '';
   for (let i = 0; i < n; i++) {
-    const x = n === 1 ? 18 : 8 + i * 10;
+    const x = n === 2 ? 13 + i * 10 : 8 + i * 10;
     s += `<rect x="${x - 1.5}" y="14" width="3" height="58" fill="#E9DDC7" stroke="rgba(31,29,27,.3)" stroke-width=".6"/>
       <path d="M${x} 4 C${x - 2.6} 8.5 ${x - 2.4} 11.4 ${x} 13 C${x + 2.4} 11.4 ${x + 2.6} 8.5 ${x} 4Z" fill="#E39A46"/>`;
   }

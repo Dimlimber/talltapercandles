@@ -36,13 +36,13 @@ const CONFIG = {
     ],
     variants: [
       {
-        id: 'single',
-        title: 'Single',
-        sub: 'One candle in its own box',
-        units: 1,
-        sku: 'TT-100-SIV-01',
+        id: 'pair',
+        title: 'Pair',
+        sub: 'Two candles, one box',
+        units: 2,
+        sku: 'TT-100-SIV-02',
         shopifyVariantId: null,
-        price: { EUR: 45, USD: 52, GBP: 39 },
+        price: { EUR: 50, USD: 56, GBP: 43 },
       },
       {
         id: 'dozen',
@@ -51,22 +51,22 @@ const CONFIG = {
         units: 12,
         sku: 'TT-100-SIV-12',
         shopifyVariantId: null,
-        price: { EUR: 395, USD: 449, GBP: 339 },
+        price: { EUR: 250, USD: 279, GBP: 215 },
       },
     ],
   },
 
-  /* Shipping: one parcel per dozen box, up to six singles per parcel.
+  /* Shipping: one parcel per dozen box, up to three pairs per parcel.
      price = first + extra * (parcels - 1); free above `freeOver`. */
   shipping: {
     zones: [
-      { id: 'FR', name: 'France', days: '2–3 days', first: { EUR: 14.9, USD: 16.9, GBP: 12.9 }, firstDozen: { EUR: 19.9, USD: 22.5, GBP: 16.9 }, extra: { EUR: 12, USD: 13.5, GBP: 10 }, freeOver: { EUR: 395, USD: 449, GBP: 339 } },
-      { id: 'EU', name: 'European Union', days: '3–5 days', first: { EUR: 24.9, USD: 27.9, GBP: 21.5 }, firstDozen: { EUR: 34.9, USD: 39, GBP: 29.9 }, extra: { EUR: 22, USD: 25, GBP: 19 }, freeOver: { EUR: 790, USD: 898, GBP: 678 } },
-      { id: 'UK', name: 'United Kingdom', days: '3–6 days', first: { EUR: 29.9, USD: 33.5, GBP: 25.5 }, firstDozen: { EUR: 39.9, USD: 45, GBP: 34 }, extra: { EUR: 28, USD: 31, GBP: 24 }, freeOver: null },
-      { id: 'NA', name: 'United States, Canada', days: '5–8 days', first: { EUR: 69, USD: 77, GBP: 59 }, firstDozen: { EUR: 139, USD: 156, GBP: 119 }, extra: { EUR: 99, USD: 111, GBP: 84 }, freeOver: null },
-      { id: 'ROW', name: 'Rest of world', days: '5–10 days', first: { EUR: 79, USD: 89, GBP: 68 }, firstDozen: { EUR: 159, USD: 178, GBP: 135 }, extra: { EUR: 119, USD: 134, GBP: 101 }, freeOver: null },
+      { id: 'FR', name: 'France', days: '2–3 days', first: { EUR: 12.9, USD: 14.5, GBP: 11 }, firstDozen: { EUR: 19.9, USD: 22.5, GBP: 17 }, extra: { EUR: 12, USD: 13.5, GBP: 10 }, freeOver: null },
+      { id: 'EU', name: 'European Union', days: '3–5 days', first: { EUR: 19.9, USD: 22.5, GBP: 17 }, firstDozen: { EUR: 34.9, USD: 39, GBP: 29.9 }, extra: { EUR: 22, USD: 25, GBP: 19 }, freeOver: null },
+      { id: 'UK', name: 'United Kingdom', days: '3–6 days', first: { EUR: 24.9, USD: 28, GBP: 21.5 }, firstDozen: { EUR: 39.9, USD: 45, GBP: 34 }, extra: { EUR: 28, USD: 31, GBP: 24 }, freeOver: null },
+      { id: 'NA', name: 'United States, Canada', days: '5–8 days', first: { EUR: 59, USD: 66, GBP: 50 }, firstDozen: { EUR: 139, USD: 156, GBP: 119 }, extra: { EUR: 99, USD: 111, GBP: 84 }, freeOver: null },
+      { id: 'ROW', name: 'Rest of world', days: '5–10 days', first: { EUR: 69, USD: 78, GBP: 59 }, firstDozen: { EUR: 159, USD: 178, GBP: 135 }, extra: { EUR: 119, USD: 134, GBP: 101 }, freeOver: null },
     ],
-    singlesPerParcel: 6,
+    pairsPerParcel: 3,
   },
 
   /* Planner: candles per guest at each density */
@@ -103,9 +103,9 @@ const Store = {
 /* ---------- shipping ---------- */
 function shippingQuote(items, zoneId, currency, subtotal) {
   const z = CONFIG.shipping.zones.find(x => x.id === zoneId);
-  const singles = items.single || 0;
+  const pairs = items.pair || 0;
   const dozens = items.dozen || 0;
-  const parcels = dozens + Math.ceil(singles / CONFIG.shipping.singlesPerParcel);
+  const parcels = dozens + Math.ceil(pairs / CONFIG.shipping.pairsPerParcel);
   if (!parcels) return 0;
   if (z.freeOver && subtotal >= z.freeOver[currency]) return 0;
   const first = dozens ? z.firstDozen[currency] : z.first[currency];
@@ -116,6 +116,8 @@ function shippingQuote(items, zoneId, currency, subtotal) {
 class Cart {
   constructor() {
     this.items = Store.get('tt.cart', {}); // { variantId: qty }
+    // drop anything saved under a variant that no longer exists (e.g. the old single)
+    Object.keys(this.items).forEach(id => { if (!this.variant(id)) delete this.items[id]; });
     this.currency = Store.get('tt.currency', CONFIG.defaultCurrency);
     this.zone = Store.get('tt.zone', 'FR');
     this.listeners = [];
